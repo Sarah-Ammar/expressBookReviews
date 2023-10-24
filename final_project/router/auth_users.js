@@ -6,8 +6,8 @@ const regd_users = express.Router();
 let users = [];
 
 const isValid = (username)=>{ 
-  let users2 = users.filter((username) => {
-    return user.name === username
+  let users2 = users.filter((user) => {
+    return user.username === username
   });
   if(users2.length > 0) {
     return true;
@@ -26,7 +26,6 @@ if (validAuthUsers.length > 0 ) {
 } else { return false;
 }
 }
-
 
 
 //only registered users can login
@@ -55,7 +54,35 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+const isbn = req.params.isbn;
+username = req.query.username; //I used const, let, and var, they were constant all the time.
+
+const review = req.query.review;
+
+if(isValid(username))
+{ 
+  books[isbn].reviews[username] = review;  //here: the square brackets helped to access the value of "username"
+  return res.status(200).send("Review added succesfully");
+}
+else {
+  return res.status(404).json({message: "User was not found"});    
+}
+ 
+});
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  const isbn = req.params.isbn;
+  username = req.query.username;
+
+  
+  if(isValid(username))
+  { 
+    books[isbn].reviews[username] = '';
+    return res.status(200).send("Review deleted succesfully");
+  }
+  else {
+    return res.status(404).json({message: "User was not found"});    
+  }
 });
 
 module.exports.authenticated = regd_users;
